@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA Responsable</title>
+<style>
+  /* ===== Teoría del color: paleta cálida (análoga de naranjas y rojos) =====
+     #f52019  Rojo intenso    -> color principal: botones y títulos, llama la atención
+     #ff533a  Rojo coral      -> encabezado y acentos
+     #ff7254  Coral claro     -> degradados y bordes
+     #ff9835  Naranja         -> energía y entusiasmo para aprender: insignias y avance
+     #faa668  Durazno         -> fondos suaves y tarjetas
+     Neutros de apoyo para leer cómodo: crema #fff6ef y café oscuro #3a1a12 para el texto */
+  :root {
+    --rojo: #f52019; --coral: #ff533a; --coral-claro: #ff7254; --naranja: #ff9835; --durazno: #faa668;
+    --crema: #fff6ef; --texto: #3a1a12; --suave: #7a4a3a; --blanco: #ffffff;
+    --sombra: 0 10px 30px rgba(245, 32, 25, .12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: "Segoe UI", Arial, sans-serif; background: var(--crema); color: var(--texto); line-height: 1.6; }
+  button { font: inherit; cursor: pointer; border: none; }
+  input { font: inherit; }
+  .oculto { display: none !important; }
+
+  /* ---------- Inicio de sesión ---------- */
+  #login { min-height: 100vh; display: grid; grid-template-columns: 1.1fr 1fr; }
+  .login-arte {
+    background: linear-gradient(140deg, var(--rojo), var(--coral) 45%, var(--naranja));
+    color: var(--blanco); padding: 60px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden;
+  }
+  .login-arte::before, .login-arte::after { content: ""; position: absolute; border-radius: 50%; background: rgba(255,255,255,.12); }
+  .login-arte::before { width: 380px; height: 380px; right: -120px; top: -100px; }
+  .login-arte::after { width: 240px; height: 240px; left: -80px; bottom: -60px; }
+  .logo { width: 64px; height: 64px; border-radius: 18px; background: var(--blanco); color: var(--rojo); display: grid; place-items: center; font-weight: 800; font-size: 24px; margin-bottom: 24px; }
+  .login-arte h1 { font-size: 46px; line-height: 1.1; margin-bottom: 14px; }
+  .login-arte p { font-size: 18px; max-width: 420px; opacity: .95; }
+  .login-form { display: grid; place-items: center; padding: 40px; }
+  .tarjeta-login { width: 100%; max-width: 380px; background: var(--blanco); padding: 36px; border-radius: 20px; box-shadow: var(--sombra); }
+  .tarjeta-login h2 { font-size: 26px; margin-bottom: 4px; }
+  .tarjeta-login p { color: var(--suave); margin-bottom: 22px; }
+  label { font-weight: 600; font-size: 14px; }
+  .campo { width: 100%; padding: 12px 14px; border: 2px solid #f3d6c7; border-radius: 12px; margin: 6px 0 16px; background: var(--crema); color: var(--texto); }
+  .campo:focus { outline: none; border-color: var(--coral-claro); background: var(--blanco); }
+  .boton { background: linear-gradient(90deg, var(--rojo), var(--coral)); color: var(--blanco); padding: 12px 22px; border-radius: 12px; font-weight: 700; box-shadow: 0 6px 16px rgba(245,32,25,.25); transition: transform .15s; }
+  .boton:hover { transform: translateY(-2px); }
+  .boton.ancho { width: 100%; }
+  .boton.claro { background: var(--blanco); color: var(--rojo); box-shadow: none; border: 2px solid var(--rojo); }
+  .error { color: var(--rojo); font-size: 14px; min-height: 20px; margin: -6px 0 10px; }
+
+  /* ---------- Encabezado ---------- */
+  header { position: sticky; top: 0; z-index: 10; background: linear-gradient(90deg, var(--rojo), var(--coral)); color: var(--blanco); box-shadow: 0 4px 14px rgba(245,32,25,.25); }
+  .barra { max-width: 1100px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .barra .logo { width: 40px; height: 40px; font-size: 15px; border-radius: 12px; margin: 0; }
+  .barra strong { font-size: 20px; margin-right: auto; }
+  nav { display: flex; gap: 6px; flex-wrap: wrap; }
+  nav a { color: var(--blanco); text-decoration: none; padding: 6px 14px; border-radius: 999px; font-size: 15px; }
+  nav a:hover { background: rgba(255,255,255,.22); }
+  .barra a.salir { text-decoration: none; padding: 7px 20px; border-radius: 999px; background: var(--blanco); color: var(--rojo); font-weight: 700; }
+  .barra a.salir:hover { background: var(--crema); }
+  nav a.salir { background: var(--blanco); color: var(--rojo); font-weight: 700; }
+
+  /* ---------- Portada de bienvenida ---------- */
+  .bienvenida { background: linear-gradient(135deg, var(--coral-claro), var(--naranja)); color: var(--blanco); }
+  .bienvenida .contenido { max-width: 1100px; margin: 0 auto; padding: 50px 20px 80px; display: grid; grid-template-columns: 1.4fr 1fr; gap: 30px; align-items: center; }
+  .bienvenida h1 { font-size: 38px; line-height: 1.15; margin-bottom: 10px; }
+  .bienvenida p { font-size: 18px; opacity: .95; }
+  .cifras { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .cifra { background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.4); border-radius: 16px; padding: 16px; text-align: center; }
+  .cifra b { display: block; font-size: 32px; }
+
+  main { max-width: 1100px; margin: -40px auto 0; padding: 0 20px 40px; position: relative; }
+  section { background: var(--blanco); border-radius: 20px; padding: 30px; margin-bottom: 26px; box-shadow: var(--sombra); }
+  .titulo-seccion { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .icono { width: 8px; height: 48px; border-radius: 4px; background: linear-gradient(180deg, var(--naranja), var(--rojo)); }
+  .titulo-seccion h2 { font-size: 26px; color: var(--rojo); }
+  .titulo-seccion span { color: var(--suave); font-size: 15px; display: block; }
+
+  /* ---------- Lecciones ---------- */
+  .lecciones { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 16px; }
+  .leccion { border-radius: 16px; padding: 20px; background: var(--crema); border-top: 6px solid var(--c); transition: transform .2s, box-shadow .2s; }
+  .leccion:hover { transform: translateY(-4px); box-shadow: var(--sombra); }
+  .numero { width: 36px; height: 36px; border-radius: 50%; background: var(--c); color: var(--blanco); display: grid; place-items: center; font-weight: 800; margin-bottom: 10px; }
+  .leccion h3 { font-size: 17px; margin-bottom: 6px; }
+  .leccion p { font-size: 14px; color: var(--suave); }
+
+  /* ---------- Tips y consejos ---------- */
+  .tips { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .tip { display: flex; gap: 14px; align-items: flex-start; padding: 18px; border-radius: 16px; background: linear-gradient(135deg, #fff1e6, var(--blanco)); border: 1px solid #f8d2bd; }
+  .tip .emoji { font-size: 28px; width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; background: var(--durazno); flex: none; }
+  .etiqueta { display: inline-block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--blanco); background: var(--c); padding: 2px 10px; border-radius: 999px; margin-bottom: 4px; }
+  .tip p { font-size: 15px; }
+
+  /* ---------- Normatividad ---------- */
+  details { border: 2px solid #f8d2bd; border-radius: 14px; margin-bottom: 12px; overflow: hidden; }
+  summary { padding: 16px 20px; font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; background: #fff1e6; }
+  summary::after { content: "+"; color: var(--rojo); font-size: 22px; line-height: 1; }
+  details[open] summary { background: var(--durazno); }
+  details[open] summary::after { content: "−"; }
+  details p { padding: 16px 20px; }
+
+  /* ---------- Agente IA ---------- */
+  .chat-caja { border-radius: 18px; overflow: hidden; border: 2px solid #f8d2bd; }
+  .chat-cabecera { background: linear-gradient(90deg, var(--coral), var(--naranja)); color: var(--blanco); padding: 14px 18px; display: flex; align-items: center; gap: 12px; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--blanco); color: var(--rojo); display: grid; place-items: center; font-weight: 800; }
+  .punto { width: 9px; height: 9px; border-radius: 50%; background: #fff3; display: inline-block; box-shadow: 0 0 0 3px rgba(255,255,255,.5); margin-right: 4px; }
+  #chat { height: 280px; overflow-y: auto; padding: 18px; background: var(--crema); display: flex; flex-direction: column; gap: 10px; }
+  .msg { padding: 10px 14px; border-radius: 16px; max-width: 75%; font-size: 15px; animation: aparecer .25s ease; }
+  .msg.usuario { background: linear-gradient(90deg, var(--rojo), var(--coral)); color: var(--blanco); align-self: flex-end; border-bottom-right-radius: 4px; }
+  .msg.agente { background: var(--blanco); border: 1px solid #f8d2bd; align-self: flex-start; border-bottom-left-radius: 4px; }
+  @keyframes aparecer { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .predeterminadas { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 18px 4px; background: var(--blanco); }
+  .predeterminadas button { background: #fff1e6; color: var(--texto); border: 1px solid var(--durazno); padding: 8px 14px; border-radius: 999px; font-size: 14px; }
+  .predeterminadas button:hover { background: var(--naranja); color: var(--blanco); border-color: var(--naranja); }
+  .chat-entrada { display: flex; gap: 10px; padding: 14px 18px; background: var(--blanco); }
+  .chat-entrada .campo { margin: 0; }
+  .aviso { font-size: 13px; color: var(--suave); padding: 0 18px 14px; background: var(--blanco); }
+
+  /* ---------- Autoevaluación ---------- */
+  .pregunta { background: var(--crema); border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; border-left: 5px solid var(--naranja); }
+  .pregunta h3 { font-size: 16px; margin-bottom: 8px; }
+  .opcion { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; cursor: pointer; }
+  .opcion:hover { background: #ffe7d6; }
+  input[type=radio] { accent-color: var(--rojo); width: 18px; height: 18px; }
+  .progreso { height: 14px; background: #ffe0cf; border-radius: 999px; overflow: hidden; margin: 14px 0 6px; }
+  .progreso div { height: 100%; width: 0; background: linear-gradient(90deg, var(--naranja), var(--rojo)); transition: width .6s; }
+  #resultado { font-weight: 700; }
+  .constancia { margin-top: 18px; text-align: center; padding: 28px; border-radius: 16px; border: 6px double var(--naranja); background: linear-gradient(135deg, #fff1e6, var(--blanco)); }
+  .constancia h3 { font-size: 26px; color: var(--rojo); letter-spacing: .08em; }
+  .constancia b { color: var(--rojo); font-size: 20px; }
+
+  /* ---------- Pie de página ---------- */
+  footer { background: var(--texto); color: #f7d9c9; padding: 40px 20px 24px; }
+  .pie { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .pie div { border-top: 4px solid var(--naranja); padding-top: 12px; }
+  .pie h4 { color: var(--blanco); margin-bottom: 4px; }
+  .derechos { text-align: center; margin-top: 26px; font-size: 13px; color: var(--durazno); }
+
+  @media (max-width: 800px) {
+    #login, .bienvenida .contenido, .pie { grid-template-columns: 1fr; }
+    .login-arte { padding: 40px 28px; }
+    .login-arte h1 { font-size: 34px; }
+    .msg { max-width: 90%; }
+  }
+  @media print { header, footer, .bienvenida, .chat-caja, .predeterminadas { display: none !important; } section { box-shadow: none; } }
+</style>
+</head>
+<body>
+
+<!-- ================= INICIO DE SESIÓN (RF-01) ================= -->
+<div id="login">
+  <div class="login-arte">
+    <div class="logo">IA</div>
+    <h1>IA Responsable</h1>
+    <p>Aprende a usar la inteligencia artificial generativa de forma ética, segura y responsable.</p>
+  </div>
+  <div class="login-form">
+    <div class="tarjeta-login">
+      <h2>Iniciar sesión</h2>
+      <p>Escribe tu correo y tu contraseña.</p>
+      <label for="correo">Correo electrónico</label>
+      <input class="campo" id="correo" type="email" placeholder="usuario@correo.com">
+      <label for="contrasena">Contraseña</label>
+      <input class="campo" id="contrasena" type="password" placeholder="Tu contraseña" onkeydown="if(event.key==='Enter') iniciarSesion()">
+      <p class="error" id="errorLogin"></p>
+      <button class="boton ancho" onclick="iniciarSesion()">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PLATAFORMA ================= -->
+<div id="plataforma" class="oculto">
+  <header>
+    <div class="barra">
+      <div class="logo">IA</div>
+      <strong>IA Responsable</strong>
+      <a href="#" class="salir" onclick="cerrarSesion()">Salir</a>
+    </div>
+  </header>
+
+  <div class="bienvenida">
+    <div class="contenido">
+      <div>
+        <h1>¡Hola, <span id="nombreUsuario"></span>!</h1>
+        <p>Aquí aprendes a usar la IA generativa sin meterte en problemas: lecciones, tips, normas y un agente que resuelve tus dudas.</p>
+      </div>
+      <div class="cifras">
+        <div class="cifra"><b>5</b>Lecciones</div>
+        <div class="cifra"><b>6</b>Tips</div>
+        <div class="cifra"><b>3</b>Normas</div>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <!-- Lecciones (RF-02) -->
+    <section id="lecciones">
+      <div class="titulo-seccion"><div class="icono"></div><div><h2>Lecciones</h2><span>Lo básico para usar la IA generativa</span></div></div>
+      <div class="lecciones">
+        <div class="leccion" style="--c:#f52019"><div class="numero">1</div><h3>¿Qué es la IA generativa?</h3><p>Programas que crean texto, imágenes o código a partir de lo que les pides.</p></div>
+        <div class="leccion" style="--c:#ff533a"><div class="numero">2</div><h3>Cómo pedirle las cosas</h3><p>Un buen prompt tiene rol, tarea, contexto y formato.</p></div>
+        <div class="leccion" style="--c:#ff7254"><div class="numero">3</div><h3>Ética</h3><p>Si usas IA en un trabajo, decláralo y cítala. Copiar sin decirlo es plagio.</p></div>
+        <div class="leccion" style="--c:#ff9835"><div class="numero">4</div><h3>Privacidad</h3><p>No escribas contraseñas, datos personales ni documentos internos en un chat de IA.</p></div>
+        <div class="leccion" style="--c:#faa668"><div class="numero">5</div><h3>Cuando se equivoca</h3><p>La IA puede inventar datos (alucinaciones). Verifica siempre en una fuente confiable.</p></div>
+      </div>
+    </section>
+
+    <!-- Tips y consejos (RF-03) -->
+    <section id="tips">
+      <div class="titulo-seccion"><div class="icono"></div><div><h2>Tips y consejos</h2><span>Trucos que sí funcionan</span></div></div>
+      <div class="tips">
+        <div class="tip" style="--c:#f52019"><div><span class="etiqueta">Prompts</span><p>Dale a la IA un rol, una tarea, el contexto y el formato que quieres.</p></div></div>
+        <div class="tip" style="--c:#ff533a"><div><span class="etiqueta">Estudio</span><p>Pídele que te haga preguntas de repaso en lugar de solo darte el resumen.</p></div></div>
+        <div class="tip" style="--c:#ff7254"><div><span class="etiqueta">Ética</span><p>Si usaste IA en una tarea, decláralo y cítala.</p></div></div>
+        <div class="tip" style="--c:#ff9835"><div><span class="etiqueta">Privacidad</span><p>Nunca escribas contraseñas ni datos personales en un chat de IA.</p></div></div>
+        <div class="tip" style="--c:#f52019"><div><span class="etiqueta">Errores</span><p>Pídele la fuente y verifica los datos antes de usarlos.</p></div></div>
+        <div class="tip" style="--c:#ff533a"><div><span class="etiqueta">Aprendizaje</span><p>Usa la IA para entender, no para que haga todo por ti.</p></div></div>
+      </div>
+    </section>
+
+    <!-- Normatividad (RF-03) -->
+    <section id="normas">
+      <div class="titulo-seccion"><div class="icono"></div><div><h2>Normatividad</h2><span>Las reglas explicadas fácil</span></div></div>
+      <details open><summary>Uso de IA</summary><p>La IA se usa como apoyo, no como sustituto de tu trabajo. Siempre debe haber revisión humana.</p></details>
+      <details><summary>Cuidado de datos personales</summary><p>No compartas con la IA datos personales ni información confidencial de la escuela o la empresa.</p></details>
+      <details><summary>Cómo citar</summary><p>Indica la herramienta, la fecha y para qué la usaste. Ejemplo: OpenAI. (2026). ChatGPT [Modelo de lenguaje].</p></details>
+    </section>
+
+    <!-- Agente IA (RF-04 y RF-05) -->
+    <section id="agente">
+      <div class="titulo-seccion"><div class="icono"></div><div><h2>Agente IA</h2><span>Resuelve tus dudas al momento</span></div></div>
+      <div class="chat-caja">
+        <div class="chat-cabecera"><div class="avatar">IA</div><div><b>Agente IA Responsable</b><br><small><span class="punto"></span>En línea</small></div></div>
+        <div id="chat"><div class="msg agente">¡Hola! Elige una pregunta o escribe tu duda.</div></div>
+        <div class="predeterminadas">
+          <button onclick="preguntar('¿Cómo escribo un buen prompt?')">¿Cómo escribo un buen prompt?</button>
+          <button onclick="preguntar('¿Es plagio usar IA en mi tarea?')">¿Es plagio usar IA en mi tarea?</button>
+          <button onclick="preguntar('¿Cómo cito la IA?')">¿Cómo cito la IA?</button>
+          <button onclick="preguntar('¿Qué datos no debo compartir?')">¿Qué datos no debo compartir?</button>
+          <button onclick="preguntar('¿Por qué la IA inventa cosas?')">¿Por qué la IA inventa cosas?</button>
+        </div>
+        <div class="chat-entrada">
+          <input class="campo" id="pregunta" placeholder="Escribe tu duda..." onkeydown="if(event.key==='Enter') preguntar()">
+          <button class="boton" onclick="preguntar()">Enviar</button>
+        </div>
+        <p class="aviso">No compartas datos personales en el chat.</p>
+      </div>
+    </section>
+
+    <!-- Autoevaluación, progreso y constancia (RF-02 y RF-06) -->
+    <section id="evaluacion">
+      <div class="titulo-seccion"><div class="icono"></div><div><h2>Autoevaluación</h2><span>Se aprueba con 8 o más</span></div></div>
+      <div id="preguntas"></div>
+      <button class="boton" onclick="calificar()">Calificar</button>
+      <div class="progreso"><div id="barra"></div></div>
+      <p id="resultado"></p>
+      <div id="constancia" class="constancia oculto">
+        <h3>CONSTANCIA</h3>
+        <p>Se hace constar que</p>
+        <b id="nombreConstancia"></b>
+        <p>terminó el curso de uso responsable de la IA generativa.</p><br>
+        <button class="boton" onclick="descargar('constancia')">Descargar constancia</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Pie de página con misión, visión y valores (RNF-01) -->
+  <footer>
+    <div class="pie">
+      <div><h4>Misión</h4>Enseñar a usar la IA generativa de forma ética, segura y responsable.</div>
+      <div><h4>Visión</h4>Ser el lugar de consulta sobre el uso responsable de la IA.</div>
+      <div><h4>Valores</h4>Honestidad, privacidad y responsabilidad.</div>
+    </div>
+    <p class="derechos">AMS González S.A. de C.V. · Proyecto final AMS · Juan Arturo González Gómez · 2026</p>
+  </footer>
+</div>
+
+<script>
+  // ---------- Inicio de sesión (RF-01): cualquier contraseña ----------
+  function iniciarSesion() {
+    const correo = document.getElementById("correo").value.trim();
+    const contrasena = document.getElementById("contrasena").value;
+    const error = document.getElementById("errorLogin");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) { error.textContent = "Escribe un correo válido."; return; }
+    if (!contrasena) { error.textContent = "Escribe una contraseña."; return; }
+    error.textContent = "";
+    const nombre = correo.split("@")[0];
+    document.getElementById("nombreUsuario").textContent = nombre;
+    document.getElementById("nombreConstancia").textContent = nombre;
+    document.getElementById("login").classList.add("oculto");
+    document.getElementById("plataforma").classList.remove("oculto");
+    window.scrollTo(0, 0);
+  }
+
+  function cerrarSesion() {
+    document.getElementById("plataforma").classList.add("oculto");
+    document.getElementById("login").classList.remove("oculto");
+    document.getElementById("contrasena").value = "";
+  }
+
+  // ---------- Descargar constancia: imprime solo esa parte (guardar como PDF) ----------
+  function descargar(id) {
+    document.querySelectorAll("main section").forEach(s => s.classList.toggle("oculto", s.id !== id && !s.contains(document.getElementById(id))));
+    window.print();
+    document.querySelectorAll("main section").forEach(s => s.classList.remove("oculto"));
+  }
+
+  // ---------- Agente IA (RF-04): preguntas predeterminadas ----------
+  const respuestas = [
+    { claves: ["prompt", "pedir", "instruccion"], respuesta: "Un buen prompt tiene 4 partes: rol, tarea, contexto y formato. Ejemplo: \"Actúa como profesor y explícame qué es una variable en 5 pasos\"." },
+    { claves: ["cito", "citar", "cita"], respuesta: "Indica la herramienta, la fecha y para qué la usaste. Ejemplo: OpenAI. (2026). ChatGPT [Modelo de lenguaje]." },
+    { claves: ["plagio", "tarea", "etica"], respuesta: "Usar IA no es plagio si lo declaras y revisas el contenido. Copiar y pegar sin decirlo sí lo es." },
+    { claves: ["datos", "privacidad", "contrasena", "personal", "compartir"], respuesta: "No compartas contraseñas, datos personales ni documentos internos. Lo que escribes puede guardarse." },
+    { claves: ["inventa", "error", "falso", "alucina"], respuesta: "La IA predice palabras, no sabe si algo es verdad. Por eso puede inventar datos: verifica siempre en una fuente confiable." }
+  ];
+
+  function quitarAcentos(t) { return t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase(); }
+
+  function agregarMensaje(texto, clase) {
+    const div = document.createElement("div");
+    div.className = "msg " + clase;
+    div.textContent = texto;
+    const chat = document.getElementById("chat");
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function preguntar(predeterminada) {
+    const campo = document.getElementById("pregunta");
+    const pregunta = (predeterminada || campo.value).trim();
+    if (!pregunta) return;
+    agregarMensaje(pregunta, "usuario");
+    campo.value = "";
+    const texto = quitarAcentos(pregunta);
+    const encontrada = respuestas.find(r => r.claves.some(c => texto.includes(c)));
+    // RF-05: si el agente no sabe la respuesta, la duda se envía al administrador
+    setTimeout(() => agregarMensaje(encontrada ? encontrada.respuesta : "No tengo esa respuesta. Envié tu duda al administrador.", "agente"), 400);
+  }
+
+  // ---------- Autoevaluación (RF-02), progreso y constancia (RF-06) ----------
+  const examen = [
+    { p: "¿Qué debes hacer si usaste IA en una tarea?", o: ["Nada", "Declarar que la usé", "Cambiar algunas palabras"], c: 1 },
+    { p: "¿Qué dato NO debes compartir con una IA?", o: ["Mi contraseña", "El tema de mi tarea"], c: 0 },
+    { p: "¿Qué es una alucinación de la IA?", o: ["Un dato inventado", "Una imagen"], c: 0 },
+    { p: "¿Qué partes tiene un buen prompt?", o: ["Solo la pregunta", "Rol, tarea, contexto y formato"], c: 1 },
+    { p: "¿Qué haces antes de usar un dato de la IA?", o: ["Lo copio", "Lo verifico"], c: 1 }
+  ];
+
+  function mostrarExamen() {
+    const cont = document.getElementById("preguntas");
+    examen.forEach((e, i) => {
+      let html = `<div class="pregunta"><h3>${i + 1}. ${e.p}</h3>`;
+      e.o.forEach((op, j) => { html += `<label class="opcion"><input type="radio" name="p${i}" value="${j}"> ${op}</label>`; });
+      cont.innerHTML += html + "</div>";
+    });
+  }
+
+  function calificar() {
+    let aciertos = 0;
+    examen.forEach((e, i) => {
+      const elegida = document.querySelector(`input[name=p${i}]:checked`);
+      if (elegida && Number(elegida.value) === e.c) aciertos++;
+    });
+    const calificacion = aciertos * 10 / examen.length;
+    const avance = aciertos * 100 / examen.length;
+    document.getElementById("barra").style.width = avance + "%";
+    const resultado = document.getElementById("resultado");
+    resultado.textContent = `Calificación: ${calificacion} (${aciertos} de ${examen.length}) · Avance: ${avance}%` + (calificacion >= 8 ? " · ¡Aprobaste!" : " · Repasa las lecciones e inténtalo de nuevo.");
+    resultado.style.color = calificacion >= 8 ? "#ff533a" : "#7a4a3a";
+    document.getElementById("constancia").classList.toggle("oculto", calificacion < 8);
+  }
+
+  mostrarExamen();
+</script>
+</body>
+</html>

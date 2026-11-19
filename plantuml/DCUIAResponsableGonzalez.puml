@@ -1,0 +1,27 @@
+@startuml
+left to right direction
+
+actor "Usuario" as usuario
+actor "Administrador" as admin
+
+rectangle "Plataforma IA Generativa" {
+  usecase "Iniciar Sesion\n(RF-01)" as UC1
+  usecase "Consultar Lecciones y Tips\n(RF-02)" as UC2
+  usecase "Consultar Normatividades\n(RF-03)" as UC3
+  usecase "Preguntar a Agente IA\n(RF-04)" as UC4
+  usecase "Realizar Autoevaluacion\n(RF-05)" as UC5
+  usecase "Gestionar Contenidos\n(RF-06)" as UC6
+}
+
+usuario --> UC1
+usuario --> UC2
+usuario --> UC3
+usuario --> UC4
+usuario --> UC5
+
+admin --> UC6
+
+UC4 .> UC1 : <<include>>
+UC6 .> UC1 : <<include>>
+UC5 .> UC2 : <<extend>>
+@enduml

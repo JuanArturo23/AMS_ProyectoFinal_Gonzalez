@@ -1,0 +1,48 @@
+@startuml
+left to right direction
+
+class Usuario {
+  -id: Integer
+  -nombre: String
+  -correo: String
+  -contrasena: String
+  --
+  +iniciarSesion()
+  +cerrarSesion()
+}
+
+class RecursoIA {
+  -id: Integer
+  -titulo: String
+  -contenido: String
+  --
+  +mostrarContenido()
+}
+
+class Tip {
+  -ejemploPrompt: String
+  --
+  +verTip()
+}
+
+class Normatividad {
+  -fuente: String
+  --
+  +verNorma()
+}
+
+class ChatAgente {
+  -idChat: Integer
+  -pregunta: String
+  -respuesta: String
+  --
+  +responderDuda()
+  +verHistorial()
+}
+
+RecursoIA <|-- Tip
+RecursoIA <|-- Normatividad
+
+Usuario "1" -- "0..*" ChatAgente : consulta >
+Usuario "1" -- "0..*" RecursoIA : revisa >
+@enduml

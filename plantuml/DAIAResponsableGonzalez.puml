@@ -1,0 +1,22 @@
+@startuml
+start
+:Ingresar a la Plataforma IA;
+:Ingresar Usuario y Contrasena;
+:Validar Credenciales;
+
+if (¿Es valido?) then (SI)
+  :Acceder al Menu Principal;
+  if (¿Que desea hacer?) then (Aprender)
+    :Consultar Lecciones, Tips y Normatividades;
+    :Realizar Autoevaluacion;
+  else (Preguntar a IA)
+    :Escribir duda en Chat Agente;
+    :Recibir respuesta del Agente IA;
+  endif
+  :Cerrar Sesion;
+else (NO)
+  :Mostrar Error de Acceso;
+endif
+
+stop
+@enduml
